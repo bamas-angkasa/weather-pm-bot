@@ -1,0 +1,24 @@
+trading:
+  edge_threshold: 0.10       # minimum edge to trade
+  kelly_fraction: 0.25       # fractional Kelly multiplier
+  dry_run: true              # set false for live trading
+  min_liquidity: 1000        # min market liquidity in USDC
+  min_volume: 500            # min 24h volume in USDC
+  max_spread: 0.08           # max bid-ask spread to enter
+
+risk:
+  max_exposure_per_market: 0.03   # 3% of bankroll per market
+  max_exposure_per_city: 0.10     # 10% of bankroll per city
+  max_daily_loss: 0.05            # 5% daily stop-loss
+  max_portfolio_exposure: 0.25    # 25% max total exposure
+
+weather:
+  ensemble_models:
+    - ecmwf_ifs04
+  max_forecast_days: 14     # skip markets beyond this
+  geocode_cache_ttl: 86400  # cache geocoding results for 24h
+
+bot:
+  interval_seconds: 300     # run every 5 minutes
+  state_file: state.json
+  log_level: INFO

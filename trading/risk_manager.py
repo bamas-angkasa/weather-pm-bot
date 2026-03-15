@@ -90,8 +90,8 @@ class RiskManager:
             return False, "Total portfolio exposure limit reached", 0.0
         capped_size = min(capped_size, remaining_total)
 
-        if capped_size < 1.0:
-            return False, f"Position size too small after caps: {capped_size:.2f}", 0.0
+        if capped_size < 5.0:
+            return False, f"Position size too small after caps: {capped_size:.2f} (min $5)", 0.0
 
         return True, "OK", capped_size
 

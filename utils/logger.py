@@ -29,4 +29,14 @@ def setup_logger(level: str = "INFO", log_file: str = "bot.log"):
         format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} | {message}",
     )
 
+    # Progress log: only INFO+ from main processing steps, no debug noise
+    logger.add(
+        "progress.log",
+        level="INFO",
+        rotation="1 MB",
+        retention="3 days",
+        format="{time:HH:mm:ss} | {level: <8} | {message}",
+        filter=lambda record: record["name"] in ("__main__", "market.polymarket_client", "execution.trader"),
+    )
+
     return logger

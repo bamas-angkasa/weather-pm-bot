@@ -19,6 +19,7 @@ import argparse
 import os
 import sys
 import time
+from collections import defaultdict
 from datetime import date, timedelta
 from typing import Optional
 
@@ -32,6 +33,7 @@ from weather.forecast import WeatherForecaster
 from weather.probability import ProbabilityEngine
 from trading.edge_detector import EdgeDetector
 from trading.position_sizer import PositionSizer
+from trading.priority_scorer import PriorityScorer
 from trading.risk_manager import RiskManager
 from execution.trader import Trader
 from utils.logger import setup_logger
@@ -55,7 +57,6 @@ def run_cycle(
     bankroll: float,
 ):
     """Run one full bot cycle: scan → forecast → trade."""
-    cfg_trading = config["trading"]
     cfg_weather = config["weather"]
     max_forecast_days = cfg_weather.get("max_forecast_days", 14)
 
@@ -70,14 +71,22 @@ def run_cycle(
         logger.warning("No weather markets found — is Polymarket accessible?")
         return
 
+    # Group legs by event_id so we only take the best edge per event
+    events: dict[str, list[MarketOpportunity]] = defaultdict(list)
+    for m in markets:
+        key = m.event_id if m.event_id else m.market_id
+        events[key].append(m)
+
+    logger.info(f"Grouped into {len(events)} events")
+
     traded = 0
     skipped = 0
     errors = 0
 
-    for market in markets:
+    for event_id, legs in events.items():
         try:
-            result = process_market(
-                market=market,
+            result = process_event(
+                legs=legs,
                 parser=parser,
                 forecaster=forecaster,
                 probability_engine=probability_engine,
@@ -89,16 +98,14 @@ def run_cycle(
                 bankroll=bankroll,
                 max_forecast_days=max_forecast_days,
             )
-
             if result == "traded":
                 traded += 1
             elif result == "skipped":
                 skipped += 1
             elif result == "error":
                 errors += 1
-
         except Exception as e:
-            logger.error(f"Unexpected error processing market {market.market_id}: {e}")
+            logger.error(f"Unexpected error processing event {event_id}: {e}")
             errors += 1
 
     logger.info(
@@ -108,8 +115,113 @@ def run_cycle(
     )
 
 
-def process_market(
+_priority_scorer = PriorityScorer()
+
+
+def score_leg(
     market: MarketOpportunity,
+    parser: MarketParser,
+    forecaster: WeatherForecaster,
+    probability_engine: ProbabilityEngine,
+    edge_detector: EdgeDetector,
+    position_sizer: PositionSizer,
+    config: dict,
+    bankroll: float,
+    max_forecast_days: int,
+) -> Optional[dict]:
+    """
+    Score a single market leg. Returns a scoring dict if tradeable, else None.
+
+    Phase 1 (local, no API): liquidity, date, price filters.
+    Phase 2 (after forecast fetch): edge, win probability, final priority score.
+    """
+    cfg = config["trading"]
+
+    # --- Phase 1: local filters (free) ---
+    if market.liquidity < cfg.get("min_liquidity", 0):
+        return None
+    if market.volume_24h < cfg.get("min_volume", 0):
+        return None
+
+    parsed = parser.parse(market.question)
+    if not parsed:
+        return None
+
+    today = date.today()
+    days_ahead = (parsed.target_date - today).days
+
+    # Day score filter — skip before fetching forecast
+    if _priority_scorer.day_score(days_ahead) == 0.0:
+        logger.debug(f"Day filter: {days_ahead}d ahead — skip")
+        return None
+
+    # Price score filter — skip extremes before fetching forecast
+    # Check both sides since we don't know signal yet
+    if _priority_scorer.price_score(market.yes_price, "BUY_YES") == 0.0 and \
+       _priority_scorer.price_score(market.yes_price, "BUY_NO") == 0.0:
+        logger.debug(f"Price filter: YES={market.yes_price:.3f} — skip")
+        return None
+
+    # --- Phase 2: fetch forecast (costs API call) ---
+    ensemble = forecaster.get_ensemble(
+        city=parsed.city,
+        target_date=parsed.target_date,
+        variable=parsed.variable,
+    )
+    if not ensemble:
+        return None
+
+    model_probability = probability_engine.compute(
+        ensemble=ensemble,
+        threshold=parsed.threshold,
+        condition=parsed.condition,
+    )
+    if model_probability is None:
+        return None
+
+    edge_result = edge_detector.compute(
+        model_probability=model_probability,
+        market_yes_price=market.yes_price,
+        ensemble=ensemble,
+    )
+    if edge_result.signal == "PASS":
+        return None
+
+    position = position_sizer.compute(
+        model_probability=model_probability,
+        market_price=market.yes_price,
+        bankroll=bankroll,
+        signal=edge_result.signal,
+    )
+    if position.usdc_size <= 0:
+        return None
+
+    priority = _priority_scorer.score(
+        edge=edge_result.edge,
+        days_ahead=days_ahead,
+        yes_price=market.yes_price,
+        signal=edge_result.signal,
+        model_probability=model_probability,
+    )
+
+    # Discard if win probability < 50%
+    if priority.win_score == 0.0:
+        logger.debug(f"Win filter: model={model_probability:.2f} signal={edge_result.signal} — skip")
+        return None
+
+    return {
+        "market": market,
+        "parsed": parsed,
+        "ensemble": ensemble,
+        "model_probability": model_probability,
+        "edge_result": edge_result,
+        "position": position,
+        "priority": priority,
+    }
+
+
+def process_event(
+    legs: list[MarketOpportunity],
     parser: MarketParser,
     forecaster: WeatherForecaster,
     probability_engine: ProbabilityEngine,
@@ -121,124 +233,74 @@ def process_market(
     bankroll: float,
     max_forecast_days: int,
 ) -> str:
-    """Process a single market. Returns 'traded', 'skipped', or 'error'."""
-    cfg = config["trading"]
+    """Score all legs of an event, pick the single best-edge leg, execute it."""
 
-    logger.debug(f"Processing: {market.question!r}")
-
-    # Filter: minimum liquidity and volume
-    if market.liquidity < cfg.get("min_liquidity", 0):
-        logger.debug(f"Skipping: liquidity {market.liquidity:.0f} < min {cfg['min_liquidity']}")
-        return "skipped"
-
-    if market.volume_24h < cfg.get("min_volume", 0):
-        logger.debug(f"Skipping: volume {market.volume_24h:.0f} < min {cfg['min_volume']}")
-        return "skipped"
-
-    # Step 2: Parse market question
-    parsed = parser.parse(market.question)
-    if not parsed:
-        logger.debug(f"Could not parse: {market.question!r}")
-        return "skipped"
-
-    # Step 3: Filter by date range
-    today = date.today()
-    days_ahead = (parsed.target_date - today).days
-
-    if days_ahead < 0:
-        logger.debug(f"Skipping: market date {parsed.target_date} is in the past")
-        return "skipped"
-
-    if days_ahead > max_forecast_days:
-        logger.debug(
-            f"Skipping: {parsed.target_date} is {days_ahead} days ahead "
-            f"(max {max_forecast_days})"
+    scored = []
+    for leg in legs:
+        score = score_leg(
+            market=leg,
+            parser=parser,
+            forecaster=forecaster,
+            probability_engine=probability_engine,
+            edge_detector=edge_detector,
+            position_sizer=position_sizer,
+            config=config,
+            bankroll=bankroll,
+            max_forecast_days=max_forecast_days,
         )
+        if score:
+            scored.append(score)
+
+    if not scored:
         return "skipped"
 
-    logger.info(
-        f"Market: {market.question!r} | "
-        f"Parsed: city={parsed.city} date={parsed.target_date} "
-        f"threshold={parsed.threshold}{parsed.unit[0].upper()} condition={parsed.condition}"
-    )
+    # Pick the leg with the highest priority score
+    best = max(scored, key=lambda s: s["priority"].final)
 
-    # Step 4: Fetch ensemble weather forecast for this city and date
-    ensemble = forecaster.get_ensemble(
-        city=parsed.city,
-        target_date=parsed.target_date,
-        variable=parsed.variable,
-    )
+    market = best["market"]
+    parsed = best["parsed"]
+    edge_result = best["edge_result"]
+    position = best["position"]
+    model_probability = best["model_probability"]
 
-    if not ensemble:
-        logger.warning(f"No ensemble data for {parsed.city} on {parsed.target_date}")
-        return "error"
+    if len(scored) > 1:
+        logger.info(
+            f"Event has {len(legs)} legs, {len(scored)} with edge — "
+            f"best: {market.question!r} edge={edge_result.edge:+.3f}"
+        )
 
-    # Step 5: Compute probability from ensemble
-    model_probability = probability_engine.compute(
-        ensemble=ensemble,
-        threshold=parsed.threshold,
-        condition=parsed.condition,
-    )
-
-    if model_probability is None:
-        logger.warning("Probability computation failed")
-        return "error"
-
-    # Step 6: Compute edge
-    yes_price = market.yes_price
-    edge_result = edge_detector.compute(
-        model_probability=model_probability,
-        market_yes_price=yes_price,
-        ensemble=ensemble,
-    )
-
-    if edge_result.signal == "PASS":
-        logger.debug(f"No edge ({edge_result.edge:+.3f}) — skipping")
-        return "skipped"
-
-    # Step 7: Determine which token to buy
     if edge_result.signal == "BUY_YES":
         token_id = market.yes_token_id
-        token_price = yes_price
+        token_price = market.yes_price
         side = "YES"
-    else:  # BUY_NO
+    else:
         token_id = market.no_token_id
         token_price = market.no_price
         side = "NO"
 
-    # Step 8: Kelly position sizing
-    position = position_sizer.compute(
-        model_probability=model_probability,
-        market_price=yes_price,
-        bankroll=bankroll,
-        signal=edge_result.signal,
-    )
-
-    if position.usdc_size <= 0:
-        logger.debug("Position size is 0 — skipping")
-        return "skipped"
-
-    # Step 9: Risk checks
+    # Risk check
     approved, reason, capped_size = risk_manager.check(
         market_id=market.market_id,
         city=parsed.city,
         proposed_size=position.usdc_size,
         bankroll=bankroll,
     )
-
     if not approved:
         logger.info(f"Trade rejected by risk manager: {reason}")
         return "skipped"
 
+    priority = best["priority"]
     logger.info(
         f"TRADE SIGNAL: BUY {side} | "
         f"city={parsed.city} date={parsed.target_date} "
         f"threshold={parsed.threshold}{parsed.unit[0].upper()} | "
-        f"model={model_probability:.1%} market={yes_price:.1%} edge={edge_result.edge:+.1%} | "
+        f"model={model_probability:.1%} market={market.yes_price:.1%} "
+        f"edge={edge_result.edge:+.1%} | "
+        f"score={priority.final:.4f} "
+        f"[day={priority.day_score:.1f} price={priority.price_score:.1f} win={priority.win_score:.1f}] | "
         f"size=${capped_size:.2f} @ {token_price:.3f}"
     )
 
-    # Step 10: Execute trade
     result = trader.buy(
         market_id=market.market_id,
         token_id=token_id,
@@ -256,9 +318,7 @@ def process_market(
             price=token_price,
             token_id=token_id,
         )
-        logger.success(
-            f"Trade executed: {side} ${capped_size:.2f} on {market.question[:60]}..."
-        )
+        logger.success(f"Trade executed: {side} ${capped_size:.2f} on {market.question[:60]}...")
         return "traded"
     else:
         logger.error(f"Trade failed: {result.message}")

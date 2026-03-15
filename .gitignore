@@ -1,0 +1,8 @@
+market\__pycache__
+execution\__pycache__
+weather_bot\__pycache__
+wweaqther\__pycache__
+__pycache__
+
+bot.log
+.env

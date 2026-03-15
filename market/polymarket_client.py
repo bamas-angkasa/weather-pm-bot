@@ -22,6 +22,7 @@ class MarketOpportunity:
     no_price: float
     volume_24h: float
     liquidity: float
+    event_id: str = ""   # groups all legs of the same negRisk event
 
 
 class PolymarketClient:
@@ -39,33 +40,21 @@ class PolymarketClient:
         self.session.headers.update({"User-Agent": "weather-polymarket-bot/1.0"})
 
     def fetch_weather_markets(self, limit: int = 200) -> list[MarketOpportunity]:
-        """Scan Polymarket for all active weather markets."""
-        markets = []
-
-        # Primary: fetch by weather tag
-        tag_markets = self._fetch_by_tag("weather", limit=limit)
-        markets.extend(tag_markets)
-
-        # Deduplicate by market_id
-        seen = {m.market_id for m in markets}
-        logger.info(f"Found {len(markets)} weather markets on Polymarket")
-        return markets
-
-    def _fetch_by_tag(self, tag_slug: str, limit: int = 200) -> list[MarketOpportunity]:
-        """Fetch markets by tag slug from Gamma API."""
+        """Scan Polymarket for all active weather markets via search-v2."""
         results = []
-        offset = 0
+        page = 1
 
-        while True:
+        while len(results) < limit:
             try:
                 resp = self.session.get(
-                    f"{GAMMA_API}/markets",
+                    f"{GAMMA_API}/search-v2",
                     params={
-                        "tag_slug": tag_slug,
-                        "active": "true",
-                        "closed": "false",
-                        "limit": min(limit, 100),
-                        "offset": offset,
+                        "q": "weather",
+                        "type": "events",
+                        "events_status": "active",
+                        "limit_per_type": 20,
+                        "page": page,
+                        "optimized": "false",
                     },
                     timeout=10,
                 )
@@ -75,55 +64,52 @@ class PolymarketClient:
                 logger.error(f"Gamma API error: {e}")
                 break
 
-            if not data:
+            events = data.get("events", [])
+            if not events:
                 break
 
-            for raw in data:
-                opportunity = self._parse_gamma_market(raw)
-                if opportunity:
-                    results.append(opportunity)
+            for event in events:
+                for raw_market in event.get("markets", []):
+                    opportunity = self._parse_gamma_market(raw_market, event_id=event.get("id", ""))
+                    if opportunity:
+                        results.append(opportunity)
 
-            if len(data) < 100:
+            if len(events) < 20:
                 break  # last page
-            offset += 100
+            page += 1
             time.sleep(0.2)
 
+        logger.info(f"Found {len(results)} weather markets on Polymarket")
         return results
 
-    def _parse_gamma_market(self, raw: dict) -> Optional[MarketOpportunity]:
-        """Parse a raw Gamma API market into a MarketOpportunity."""
+    def _parse_gamma_market(self, raw: dict, event_id: str = "") -> Optional[MarketOpportunity]:
+        """Parse a raw search-v2 market into a MarketOpportunity."""
+        import json as _json
         try:
+            if not raw.get("active") or raw.get("closed"):
+                return None
+
             market_id = raw.get("id", "")
             question = raw.get("question", "")
             condition_id = raw.get("conditionId", "")
-            tokens = raw.get("tokens", [])
 
-            if len(tokens) < 2:
+            # Token IDs: clobTokenIds is a JSON string "[yes_id, no_id]"
+            clob_token_ids = raw.get("clobTokenIds", "[]")
+            if isinstance(clob_token_ids, str):
+                clob_token_ids = _json.loads(clob_token_ids)
+            if len(clob_token_ids) < 2:
                 return None
+            yes_token_id = clob_token_ids[0]
+            no_token_id = clob_token_ids[1]
 
-            # Extract YES/NO token IDs
-            yes_token_id = ""
-            no_token_id = ""
-            for token in tokens:
-                outcome = token.get("outcome", "").lower()
-                if outcome == "yes":
-                    yes_token_id = token.get("token_id", "")
-                elif outcome == "no":
-                    no_token_id = token.get("token_id", "")
-
-            if not yes_token_id or not no_token_id:
-                return None
-
-            # Get prices from outcomePrices field (JSON string or list)
-            outcome_prices = raw.get("outcomePrices", ["0.5", "0.5"])
+            # Prices: outcomePrices is a JSON string "[yes_price, no_price]"
+            outcome_prices = raw.get("outcomePrices", "[\"0.5\", \"0.5\"]")
             if isinstance(outcome_prices, str):
-                import json
-                outcome_prices = json.loads(outcome_prices)
-
+                outcome_prices = _json.loads(outcome_prices)
             yes_price = float(outcome_prices[0]) if outcome_prices else 0.5
             no_price = float(outcome_prices[1]) if len(outcome_prices) > 1 else 1.0 - yes_price
 
-            volume = float(raw.get("volume", 0) or 0)
+            volume = float(raw.get("volume24hr", 0) or 0)
             liquidity = float(raw.get("liquidity", 0) or 0)
 
             return MarketOpportunity(
@@ -136,6 +122,7 @@ class PolymarketClient:
                 no_price=no_price,
                 volume_24h=volume,
                 liquidity=liquidity,
+                event_id=event_id,
             )
 
         except (KeyError, ValueError, TypeError) as e:

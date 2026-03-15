@@ -29,12 +29,14 @@ class RiskManager:
 
     def __init__(
         self,
+        min_trade_size: float = 5.0,
         max_per_market: float = 0.10,
         max_per_city: float = 0.20,
         max_daily_loss: float = 0.10,
         max_total_exposure: float = 0.50,
         state_file: str = "state.json",
     ):
+        self.min_trade_size = min_trade_size
         self.max_per_market = max_per_market
         self.max_per_city = max_per_city
         self.max_daily_loss = max_daily_loss
@@ -90,8 +92,13 @@ class RiskManager:
             return False, "Total portfolio exposure limit reached", 0.0
         capped_size = min(capped_size, remaining_total)
 
-        if capped_size < 5.0:
-            return False, f"Position size too small after caps: {capped_size:.2f} (min $5)", 0.0
+        if capped_size < self.min_trade_size:
+            # Floor to minimum if we have enough portfolio room
+            if self.min_trade_size <= remaining_total and self.min_trade_size <= (bankroll * self.max_per_city - current_city_exp):
+                logger.info(f"Flooring trade size to minimum: ${capped_size:.2f} → ${self.min_trade_size:.2f}")
+                capped_size = self.min_trade_size
+            else:
+                return False, f"Position size too small after caps: {capped_size:.2f} (min ${self.min_trade_size:.0f})", 0.0
 
         return True, "OK", capped_size
 

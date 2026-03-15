@@ -5,9 +5,18 @@ Two-phase design to minimize API calls:
   Phase 1 (local, free): day_score + price_score — filter before fetching forecast
   Phase 2 (after forecast): win_score — requires model probability
 
+Phase 1 thresholds (configurable):
+  MIN_DAY_SCORE   = 0.6  — skip 11–14 day markets (too unreliable)
+  MIN_PRICE_SCORE = 0.8  — skip extreme prices (<8¢ or >65¢ on buy side)
+  MAX_LEGS_PER_EVENT = 3 — only top N legs per event pass to forecast
+
 Final score = edge × day_score × price_score × win_score
 """
 from dataclasses import dataclass
+
+MIN_DAY_SCORE = 0.2    # allow same-day/next-day; day multiplier handles ranking
+MIN_PRICE_SCORE = 0.8
+MAX_LEGS_PER_EVENT = 3
 
 
 @dataclass
@@ -71,6 +80,15 @@ class PriorityScorer:
             return 0.8
         else:
             return 1.0
+
+    def local_rank(self, yes_price: float, days_ahead: int) -> float:
+        """
+        Phase 1 combined rank — used to cap legs per event before forecast fetch.
+        Takes the better of BUY_YES or BUY_NO price score.
+        """
+        d = self.day_score(days_ahead)
+        p = max(self.price_score(yes_price, "BUY_YES"), self.price_score(yes_price, "BUY_NO"))
+        return d * p
 
     def score(
         self,

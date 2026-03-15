@@ -4,17 +4,27 @@ Fetches probabilistic ensemble weather forecasts from Open-Meteo.
 Uses the ECMWF IFS ensemble model (51 members) to get temperature
 and precipitation distributions for a specific city and date.
 
+For today/tomorrow, ensemble models often lack daily max data (day not over yet),
+so we fall back to the deterministic forecast API and generate a synthetic ensemble
+using realistic uncertainty std-devs based on forecast horizon.
+
 Free API, no key required.
 """
+import random
 import time
 from datetime import date, timedelta
-from functools import lru_cache
 from typing import Optional
 import requests
 from loguru import logger
 
 GEOCODING_API = "https://geocoding-api.open-meteo.com/v1/search"
-ENSEMBLE_API = "https://ensemble-api.open-meteo.com/v1/ensemble"
+ENSEMBLE_API  = "https://ensemble-api.open-meteo.com/v1/ensemble"
+FORECAST_API  = "https://api.open-meteo.com/v1/forecast"
+
+# Synthetic ensemble uncertainty (std dev in °C or mm) by days ahead
+_UNCERTAINTY_BY_DAY = {0: 1.5, 1: 2.0, 2: 2.5, 3: 3.0}
+_UNCERTAINTY_DEFAULT = 4.0
+_SYNTHETIC_MEMBERS = 50
 
 # Cache geocoding results to avoid repeated API calls
 _geocode_cache: dict[str, Optional[tuple[float, float]]] = {}
@@ -107,17 +117,67 @@ class WeatherForecaster:
         target_date: date,
         api_variable: str,
     ) -> Optional[list[float]]:
-        """Fetch ensemble forecast values for a specific location and date."""
-        # Request a range around the target date to ensure we hit it
-        start = target_date
-        end = target_date
-
+        """Fetch ensemble forecast values for a specific location and date.
+        Falls back to deterministic forecast + synthetic ensemble if all models fail."""
         for model in self.models:
-            members = self._fetch_model_ensemble(lat, lon, start, end, api_variable, model)
+            members = self._fetch_model_ensemble(lat, lon, target_date, target_date, api_variable, model)
             if members:
                 return members
 
-        return None
+        # Fallback: deterministic forecast → synthetic ensemble
+        logger.info(f"Ensemble unavailable for {target_date} — using deterministic fallback")
+        return self._fetch_deterministic_fallback(lat, lon, target_date, api_variable)
+
+    def _fetch_deterministic_fallback(
+        self,
+        lat: float,
+        lon: float,
+        target_date: date,
+        api_variable: str,
+    ) -> Optional[list[float]]:
+        """Fetch deterministic forecast and generate synthetic ensemble with realistic noise."""
+        try:
+            resp = self.session.get(
+                FORECAST_API,
+                params={
+                    "latitude": lat,
+                    "longitude": lon,
+                    "daily": api_variable,
+                    "start_date": target_date.isoformat(),
+                    "end_date": target_date.isoformat(),
+                    "timezone": "UTC",
+                },
+                timeout=15,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+
+            daily = data.get("daily", {})
+            times = daily.get("time", [])
+            values = daily.get(api_variable, [])
+
+            if not times or not values or values[0] is None:
+                logger.warning(f"Deterministic fallback: no data for {api_variable} on {target_date}")
+                return None
+
+            center = float(values[0])
+            days_ahead = (target_date - date.today()).days
+            std = _UNCERTAINTY_BY_DAY.get(days_ahead, _UNCERTAINTY_DEFAULT)
+
+            # Generate synthetic ensemble around the deterministic value
+            rng = random.Random(int(target_date.strftime("%Y%m%d")) + int(lat * 100))
+            members = [rng.gauss(center, std) for _ in range(_SYNTHETIC_MEMBERS)]
+
+            logger.info(
+                f"Synthetic ensemble: center={center:.1f} std={std:.1f}°  "
+                f"({_SYNTHETIC_MEMBERS} members, days_ahead={days_ahead})"
+            )
+            time.sleep(0.3)
+            return members
+
+        except Exception as e:
+            logger.error(f"Deterministic fallback error: {e}")
+            return None
 
     def _fetch_model_ensemble(
         self,

@@ -1,14 +1,12 @@
 """
-Scan debug: fetch markets, group by event, apply Phase 1 local filters,
-show which legs would proceed to forecast fetch and their price/day scores.
-No forecast API calls made here.
+Scan debug: shows exactly which filter drops each leg.
 """
-from collections import defaultdict
+from collections import defaultdict, Counter
 from datetime import date
 
 from market.polymarket_client import PolymarketClient
 from market.market_parser import MarketParser
-from trading.priority_scorer import PriorityScorer
+from trading.priority_scorer import PriorityScorer, MIN_DAY_SCORE, MIN_PRICE_SCORE, MAX_LEGS_PER_EVENT
 
 client = PolymarketClient()
 parser = MarketParser()
@@ -16,55 +14,64 @@ scorer = PriorityScorer()
 today = date.today()
 
 markets = client.fetch_weather_markets()
-print(f"\n=== Fetched {len(markets)} legs ===\n")
+print(f"\n=== Fetched {len(markets)} legs  (today={today}) ===")
+print(f"    Thresholds: day>={MIN_DAY_SCORE}  price>={MIN_PRICE_SCORE}  cap={MAX_LEGS_PER_EVENT}/event\n")
 
-# Group by event_id
-events = defaultdict(list)
-for m in markets:
-    events[m.event_id or m.market_id].append(m)
+drop_reasons = Counter()
+days_dist = Counter()
+price_dist = Counter()
 
-print(f"=== {len(events)} events ===\n")
+passing = []
 
-total_pass = 0
-total_skip = 0
-
-for event_id, legs in events.items():
-    passing = []
-    for leg in legs:
-        parsed = parser.parse(leg.question)
-        if not parsed:
-            total_skip += 1
-            continue
-
-        days_ahead = (parsed.target_date - today).days
-        day_s = scorer.day_score(days_ahead)
-        price_s_yes = scorer.price_score(leg.yes_price, "BUY_YES")
-        price_s_no  = scorer.price_score(leg.yes_price, "BUY_NO")
-        best_price_s = max(price_s_yes, price_s_no)
-
-        passes = day_s > 0.0 and best_price_s > 0.0
-        if passes:
-            passing.append((leg, parsed, days_ahead, day_s, best_price_s))
-            total_pass += 1
-        else:
-            total_skip += 1
-
-    if not passing:
+for leg in markets:
+    parsed = parser.parse(leg.question)
+    if not parsed:
+        drop_reasons["parse_fail"] += 1
         continue
 
-    # Show event header from first passing leg
-    sample = passing[0]
-    print(f"EVENT [{event_id}]  legs={len(legs)}  passing={len(passing)}")
-    for leg, parsed, days_ahead, day_s, price_s in passing:
-        side = "YES" if leg.yes_price < 0.5 else "NO "
-        token_price = leg.yes_price if side.strip() == "YES" else 1 - leg.yes_price
-        print(
-            f"  [{leg.market_id}] {side} @ {token_price:.3f}  "
-            f"day={day_s:.1f}  price={price_s:.1f}  "
-            f"days={days_ahead}  liq=${leg.liquidity:.0f}  "
-            f"| {leg.question[:65]}"
-        )
-    print()
+    days_ahead = (parsed.target_date - today).days
+    day_s = scorer.day_score(days_ahead)
+    price_s = max(
+        scorer.price_score(leg.yes_price, "BUY_YES"),
+        scorer.price_score(leg.yes_price, "BUY_NO"),
+    )
 
-print(f"=== Phase 1 summary: {total_pass} pass forecast filter, {total_skip} skipped ===")
-print(f"    (Only {total_pass} forecast API calls needed instead of {len(markets)})")
+    days_dist[f"{days_ahead}d → day_score={day_s}"] += 1
+    price_dist[f"YES={leg.yes_price:.2f} → price_score={price_s}"] += 1
+
+    if day_s < MIN_DAY_SCORE:
+        drop_reasons[f"day_score={day_s} (<{MIN_DAY_SCORE})"] += 1
+    elif price_s < MIN_PRICE_SCORE:
+        drop_reasons[f"price_score={price_s} (<{MIN_PRICE_SCORE})"] += 1
+    else:
+        passing.append((leg, parsed, days_ahead, day_s, price_s))
+
+print("=== Drop reasons ===")
+for reason, count in drop_reasons.most_common():
+    print(f"  {count:3d}  {reason}")
+
+print("\n=== Days distribution (all legs) ===")
+for k, v in sorted(days_dist.items()):
+    print(f"  {v:3d}  {k}")
+
+print("\n=== Price distribution sample (first 20 unique) ===")
+for k, v in list(price_dist.most_common(20)):
+    print(f"  {v:3d}  {k}")
+
+print(f"\n=== After thresholds: {len(passing)} legs pass ===")
+if passing:
+    # Group and cap
+    events = defaultdict(list)
+    for leg, parsed, days_ahead, day_s, price_s in passing:
+        events[leg.event_id or leg.market_id].append((leg, parsed, days_ahead, day_s, price_s))
+
+    total_after_cap = 0
+    for event_id, legs in events.items():
+        legs.sort(key=lambda x: x[3] * x[4], reverse=True)
+        capped = legs[:MAX_LEGS_PER_EVENT]
+        total_after_cap += len(capped)
+        print(f"  EVENT {event_id}: {len(capped)} leg(s) → forecast")
+        for leg, parsed, days_ahead, day_s, price_s in capped:
+            print(f"    YES={leg.yes_price:.3f}  day={day_s}  price={price_s}  days={days_ahead}  {leg.question[:60]}")
+
+    print(f"\n=== Final: {total_after_cap} forecast API calls ===")

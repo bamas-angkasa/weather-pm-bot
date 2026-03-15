@@ -33,7 +33,7 @@ from weather.forecast import WeatherForecaster
 from weather.probability import ProbabilityEngine
 from trading.edge_detector import EdgeDetector
 from trading.position_sizer import PositionSizer
-from trading.priority_scorer import PriorityScorer
+from trading.priority_scorer import PriorityScorer, MIN_DAY_SCORE, MIN_PRICE_SCORE, MAX_LEGS_PER_EVENT
 from trading.risk_manager import RiskManager
 from execution.trader import Trader
 from utils.logger import setup_logger
@@ -151,15 +151,17 @@ def score_leg(
     days_ahead = (parsed.target_date - today).days
 
     # Day score filter — skip before fetching forecast
-    if _priority_scorer.day_score(days_ahead) == 0.0:
-        logger.debug(f"Day filter: {days_ahead}d ahead — skip")
+    if _priority_scorer.day_score(days_ahead) < MIN_DAY_SCORE:
+        logger.debug(f"Day filter: {days_ahead}d ahead score too low — skip")
         return None
 
     # Price score filter — skip extremes before fetching forecast
-    # Check both sides since we don't know signal yet
-    if _priority_scorer.price_score(market.yes_price, "BUY_YES") == 0.0 and \
-       _priority_scorer.price_score(market.yes_price, "BUY_NO") == 0.0:
-        logger.debug(f"Price filter: YES={market.yes_price:.3f} — skip")
+    best_price_s = max(
+        _priority_scorer.price_score(market.yes_price, "BUY_YES"),
+        _priority_scorer.price_score(market.yes_price, "BUY_NO"),
+    )
+    if best_price_s < MIN_PRICE_SCORE:
+        logger.debug(f"Price filter: YES={market.yes_price:.3f} score too low — skip")
         return None
 
     # --- Phase 2: fetch forecast (costs API call) ---
@@ -235,8 +237,18 @@ def process_event(
 ) -> str:
     """Score all legs of an event, pick the single best-edge leg, execute it."""
 
+    # Phase 1 cap: rank legs locally, only pass top N to forecast API
+    def _local_rank(leg):
+        parsed = parser.parse(leg.question)
+        if not parsed:
+            return 0.0
+        days_ahead = (date.today() - parsed.target_date).days * -1
+        return _priority_scorer.local_rank(leg.yes_price, days_ahead)
+
+    top_legs = sorted(legs, key=_local_rank, reverse=True)[:MAX_LEGS_PER_EVENT]
+
     scored = []
-    for leg in legs:
+    for leg in top_legs:
         score = score_leg(
             market=leg,
             parser=parser,
@@ -374,6 +386,7 @@ def main():
         kelly_fraction=config["trading"]["kelly_fraction"]
     )
     risk_manager = RiskManager(
+        min_trade_size=config["risk"].get("min_trade_size", 5.0),
         max_per_market=config["risk"]["max_exposure_per_market"],
         max_per_city=config["risk"]["max_exposure_per_city"],
         max_daily_loss=config["risk"]["max_daily_loss"],

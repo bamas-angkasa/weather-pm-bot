@@ -29,10 +29,10 @@ class RiskManager:
 
     def __init__(
         self,
-        max_per_market: float = 0.03,
-        max_per_city: float = 0.10,
-        max_daily_loss: float = 0.05,
-        max_total_exposure: float = 0.25,
+        max_per_market: float = 0.10,
+        max_per_city: float = 0.20,
+        max_daily_loss: float = 0.10,
+        max_total_exposure: float = 0.50,
         state_file: str = "state.json",
     ):
         self.max_per_market = max_per_market

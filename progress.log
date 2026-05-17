@@ -1,0 +1,299 @@
+05:16:42 | INFO     | Weather Polymarket Bot starting up
+05:16:42 | INFO     | Config: dry_run=True bankroll=$21.00 edge_threshold=10% kelly_fraction=25%
+05:16:42 | INFO     | ============================================================
+05:16:42 | INFO     | Starting new bot cycle
+05:16:44 | INFO     | Found 307 weather markets on Polymarket
+05:16:44 | INFO     | Fetched 307 weather markets
+05:16:44 | INFO     | Grouped into 39 events
+05:16:51 | INFO     | Cycle complete: 0 trades, 39 skipped, 0 errors | Total exposure: $0.00 | Daily PnL: $0.00
+05:25:23 | INFO     | Weather Polymarket Bot starting up
+05:25:23 | INFO     | Config: dry_run=True bankroll=$21.00 edge_threshold=10% kelly_fraction=25%
+05:25:23 | INFO     | ============================================================
+05:25:23 | INFO     | Starting new bot cycle
+05:25:25 | INFO     | Found 307 weather markets on Polymarket
+05:25:25 | INFO     | Fetched 307 weather markets
+05:25:25 | INFO     | Grouped into 39 events
+05:25:28 | INFO     | Trade rejected by risk manager: Position size too small after caps: 0.63 (min $5)
+05:25:30 | INFO     | Trade rejected by risk manager: Position size too small after caps: 0.63 (min $5)
+05:25:33 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 11°C on March 16?' edge=+0.640
+05:25:33 | INFO     | Trade rejected by risk manager: Position size too small after caps: 0.63 (min $5)
+05:25:34 | INFO     | Trade rejected by risk manager: Position size too small after caps: 0.63 (min $5)
+05:25:35 | INFO     | Trade rejected by risk manager: Position size too small after caps: 0.63 (min $5)
+05:25:39 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in Seoul be 10°C on March 17?' edge=+0.815
+05:25:39 | INFO     | Trade rejected by risk manager: Position size too small after caps: 0.63 (min $5)
+05:25:41 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 13°C on March 17?' edge=+0.670
+05:25:41 | INFO     | Trade rejected by risk manager: Position size too small after caps: 0.63 (min $5)
+05:25:43 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in New York City be 50°F or higher on March 17?' edge=+0.430
+05:25:43 | INFO     | Trade rejected by risk manager: Position size too small after caps: 0.63 (min $5)
+05:25:43 | INFO     | Cycle complete: 0 trades, 39 skipped, 0 errors | Total exposure: $0.00 | Daily PnL: $0.00
+05:27:32 | INFO     | Weather Polymarket Bot starting up
+05:27:32 | INFO     | Config: dry_run=True bankroll=$21.00 edge_threshold=10% kelly_fraction=25%
+05:27:32 | INFO     | ============================================================
+05:27:32 | INFO     | Starting new bot cycle
+05:27:34 | INFO     | Found 307 weather markets on Polymarket
+05:27:34 | INFO     | Fetched 307 weather markets
+05:27:34 | INFO     | Grouped into 39 events
+05:27:38 | INFO     | Event has 10 legs, 2 with edge — best: 'Will the highest temperature in Seoul be 9°C on March 16?' edge=+0.745
+05:27:38 | INFO     | Trade rejected by risk manager: Position size too small after caps: 4.86 (min $5)
+05:27:39 | INFO     | TRADE SIGNAL: BUY NO | city=Chicago date=2026-03-16 threshold=26.0C | model=0.0% market=12.0% edge=-12.0% | score=0.0120 [day=0.2 price=0.5 win=1.0] | size=$5.25 @ 0.880
+05:27:39 | INFO     | [DRY RUN] BUY NO | market=1577618... | size=$5.25 @ 0.880 | shares=5.97 | token=78654342...
+05:27:39 | SUCCESS  | Trade executed: NO $5.25 on Will the highest temperature in Chicago be between 26-27°F o...
+05:27:42 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 11°C on March 16?' edge=+0.640
+05:27:42 | INFO     | Trade rejected by risk manager: Position size too small after caps: 4.10 (min $5)
+05:27:43 | INFO     | TRADE SIGNAL: BUY NO | city=New York City date=2026-03-16 threshold=54.0C | model=0.0% market=11.6% edge=-11.6% | score=0.0116 [day=0.2 price=0.5 win=1.0] | size=$5.25 @ 0.884
+05:27:43 | INFO     | [DRY RUN] BUY NO | market=1577571... | size=$5.25 @ 0.884 | shares=5.94 | token=11333394...
+05:27:43 | SUCCESS  | Trade executed: NO $5.25 on Will the highest temperature in New York City be between 54-...
+05:27:44 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:27:45 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:27:47 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in Seoul be 10°C on March 17?' edge=+0.815
+05:27:47 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:27:49 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 13°C on March 17?' edge=+0.675
+05:27:49 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:27:51 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in New York City be 50°F or higher on March 17?' edge=+0.425
+05:27:51 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:27:51 | INFO     | Cycle complete: 2 trades, 37 skipped, 0 errors | Total exposure: $10.50 | Daily PnL: $0.00
+05:33:38 | INFO     | Weather Polymarket Bot starting up
+05:33:38 | INFO     | Config: dry_run=False bankroll=$21.00 edge_threshold=10% kelly_fraction=25%
+05:33:39 | INFO     | CLOB client initialized for live trading
+05:33:39 | INFO     | ============================================================
+05:33:39 | INFO     | Starting new bot cycle
+05:33:41 | INFO     | Found 314 weather markets on Polymarket
+05:33:41 | INFO     | Fetched 314 weather markets
+05:33:41 | INFO     | Grouped into 39 events
+05:33:46 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:33:48 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in Chicago be between 30-31°F on March 16?' edge=-0.188
+05:33:48 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:33:50 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 11°C on March 16?' edge=+0.650
+05:33:50 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:33:52 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in New York City be between 60-61°F on March 16?' edge=-0.170
+05:33:52 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:33:56 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in Seoul be 10°C on March 17?' edge=+0.820
+05:33:56 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:34:00 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 13°C on March 17?' edge=+0.675
+05:34:00 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:34:02 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in New York City be 50°F or higher on March 17?' edge=+0.415
+05:34:02 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:34:02 | INFO     | Cycle complete: 0 trades, 39 skipped, 0 errors | Total exposure: $10.50 | Daily PnL: $0.00
+05:36:02 | INFO     | Weather Polymarket Bot starting up
+05:36:02 | INFO     | Config: dry_run=False bankroll=$21.00 edge_threshold=10% kelly_fraction=25%
+05:36:03 | INFO     | CLOB client initialized for live trading
+05:36:03 | INFO     | ============================================================
+05:36:03 | INFO     | Starting new bot cycle
+05:36:05 | INFO     | Found 314 weather markets on Polymarket
+05:36:05 | INFO     | Fetched 314 weather markets
+05:36:05 | INFO     | Grouped into 39 events
+05:36:08 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:36:10 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:36:12 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in Chicago be between 30-31°F on March 16?' edge=-0.186
+05:36:12 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:36:14 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 11°C on March 16?' edge=+0.640
+05:36:14 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:36:16 | INFO     | Trade rejected by risk manager: Already have position in this market
+05:36:19 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in Seoul be 10°C on March 17?' edge=+0.820
+05:36:19 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:36:22 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 13°C on March 17?' edge=+0.675
+05:36:22 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:36:24 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in New York City be 50°F or higher on March 17?' edge=+0.415
+05:36:24 | INFO     | Trade rejected by risk manager: Position size too small after caps: 2.10 (min $5)
+05:36:24 | INFO     | Cycle complete: 0 trades, 39 skipped, 0 errors | Total exposure: $10.50 | Daily PnL: $0.00
+05:37:17 | INFO     | Weather Polymarket Bot starting up
+05:37:17 | INFO     | Config: dry_run=False bankroll=$21.00 edge_threshold=10% kelly_fraction=25%
+05:37:18 | INFO     | CLOB client initialized for live trading
+05:37:18 | INFO     | ============================================================
+05:37:18 | INFO     | Starting new bot cycle
+05:37:19 | INFO     | Found 314 weather markets on Polymarket
+05:37:19 | INFO     | Fetched 314 weather markets
+05:37:19 | INFO     | Grouped into 39 events
+05:37:23 | INFO     | TRADE SIGNAL: BUY YES | city=Seoul date=2026-03-16 threshold=11.0C | model=56.0% market=23.0% edge=+33.0% | score=0.0528 [day=0.2 price=1.0 win=0.8] | size=$5.00 @ 0.230
+05:37:24 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:24 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:26 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in Chicago be between 30-31°F on March 16?' edge=-0.191
+05:37:26 | INFO     | TRADE SIGNAL: BUY NO | city=Chicago date=2026-03-16 threshold=30.0C | model=0.0% market=19.1% edge=-19.1% | score=0.0191 [day=0.2 price=0.5 win=1.0] | size=$5.25 @ 0.809
+05:37:27 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:27 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:29 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 11°C on March 16?' edge=+0.650
+05:37:29 | INFO     | TRADE SIGNAL: BUY YES | city=London date=2026-03-16 threshold=11.0C | model=82.0% market=17.0% edge=+65.0% | score=0.1300 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.170
+05:37:30 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'invalid amount for a marketable BUY order ($0.9), min size: $1'}]
+05:37:30 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'invalid amount for a marketable BUY order ($0.9), min size: $1'}]
+05:37:31 | INFO     | TRADE SIGNAL: BUY NO | city=New York City date=2026-03-16 threshold=54.0C | model=0.0% market=12.4% edge=-12.4% | score=0.0124 [day=0.2 price=0.5 win=1.0] | size=$5.25 @ 0.876
+05:37:32 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:32 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:35 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in Seoul be 10°C on March 17?' edge=+0.820
+05:37:35 | INFO     | TRADE SIGNAL: BUY YES | city=Seoul date=2026-03-17 threshold=10.0C | model=94.0% market=12.0% edge=+82.0% | score=0.1640 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.120
+05:37:35 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:35 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:38 | INFO     | TRADE SIGNAL: BUY NO | city=Seattle date=2026-03-16 threshold=52.0C | model=0.0% market=13.5% edge=-13.5% | score=0.0135 [day=0.2 price=0.5 win=1.0] | size=$5.25 @ 0.865
+05:37:38 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:38 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:41 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 13°C on March 17?' edge=+0.675
+05:37:41 | INFO     | TRADE SIGNAL: BUY YES | city=London date=2026-03-17 threshold=13.0C | model=80.0% market=12.5% edge=+67.5% | score=0.1350 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.125
+05:37:42 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'invalid amount for a marketable BUY order ($0.7), min size: $1'}]
+05:37:42 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'invalid amount for a marketable BUY order ($0.7), min size: $1'}]
+05:37:44 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in New York City be 50°F or higher on March 17?' edge=+0.410
+05:37:44 | INFO     | TRADE SIGNAL: BUY YES | city=New York City date=2026-03-17 threshold=10.0F | model=98.0% market=57.0% edge=+41.0% | score=0.0656 [day=0.2 price=0.8 win=1.0] | size=$5.01 @ 0.570
+05:37:44 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:44 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:37:44 | INFO     | Cycle complete: 0 trades, 31 skipped, 8 errors | Total exposure: $0.00 | Daily PnL: $0.00
+05:55:26 | INFO     | Weather Polymarket Bot starting up
+05:55:26 | INFO     | Config: dry_run=False bankroll=$21.00 edge_threshold=10% kelly_fraction=25%
+05:55:26 | INFO     | CLOB client initialized for live trading
+05:55:26 | INFO     | ============================================================
+05:55:26 | INFO     | Starting new bot cycle
+05:55:29 | INFO     | Found 313 weather markets on Polymarket
+05:55:29 | INFO     | Fetched 313 weather markets
+05:55:29 | INFO     | Grouped into 39 events
+05:55:34 | INFO     | TRADE SIGNAL: BUY YES | city=Seoul date=2026-03-16 threshold=9.0C | model=94.0% market=16.5% edge=+77.5% | score=0.1550 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.165
+05:55:34 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:34 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:37 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 11°C on March 16?' edge=+0.575
+05:55:37 | INFO     | TRADE SIGNAL: BUY YES | city=London date=2026-03-16 threshold=11.0C | model=76.0% market=18.5% edge=+57.5% | score=0.1150 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.185
+05:55:38 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:38 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:39 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in New York City be between 60-61°F on March 16?' edge=-0.175
+05:55:39 | INFO     | TRADE SIGNAL: BUY NO | city=New York City date=2026-03-16 threshold=60.0C | model=0.0% market=17.5% edge=-17.5% | score=0.0175 [day=0.2 price=0.5 win=1.0] | size=$5.25 @ 0.825
+05:55:40 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:40 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:42 | INFO     | TRADE SIGNAL: BUY YES | city=Toronto date=2026-03-16 threshold=10.0C | model=98.0% market=8.5% edge=+89.5% | score=0.1790 [day=0.2 price=1.0 win=1.0] | size=$5.14 @ 0.085
+05:55:43 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:43 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:45 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in Seoul be 10°C on March 17?' edge=+0.820
+05:55:45 | INFO     | TRADE SIGNAL: BUY YES | city=Seoul date=2026-03-17 threshold=10.0C | model=94.0% market=12.0% edge=+82.0% | score=0.1640 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.120
+05:55:46 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:46 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:49 | INFO     | TRADE SIGNAL: BUY YES | city=London date=2026-03-17 threshold=13.0C | model=80.0% market=13.0% edge=+67.0% | score=0.1340 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.130
+05:55:50 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:50 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:52 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in New York City be 50°F or higher on March 17?' edge=+0.410
+05:55:52 | INFO     | TRADE SIGNAL: BUY YES | city=New York City date=2026-03-17 threshold=10.0F | model=98.0% market=57.0% edge=+41.0% | score=0.0656 [day=0.2 price=0.8 win=1.0] | size=$5.01 @ 0.570
+05:55:53 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:53 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:55:53 | INFO     | Cycle complete: 0 trades, 32 skipped, 7 errors | Total exposure: $0.00 | Daily PnL: $0.00
+05:56:12 | INFO     | Weather Polymarket Bot starting up
+05:56:12 | INFO     | Config: dry_run=False bankroll=$21.00 edge_threshold=10% kelly_fraction=25%
+05:56:12 | INFO     | CLOB client initialized for live trading
+05:56:12 | INFO     | ============================================================
+05:56:12 | INFO     | Starting new bot cycle
+05:56:14 | INFO     | Found 313 weather markets on Polymarket
+05:56:14 | INFO     | Fetched 313 weather markets
+05:56:14 | INFO     | Grouped into 39 events
+05:56:20 | INFO     | TRADE SIGNAL: BUY YES | city=Seoul date=2026-03-16 threshold=9.0C | model=94.0% market=16.5% edge=+77.5% | score=0.1550 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.165
+05:56:20 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:20 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:23 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 11°C on March 16?' edge=+0.575
+05:56:23 | INFO     | TRADE SIGNAL: BUY YES | city=London date=2026-03-16 threshold=11.0C | model=76.0% market=18.5% edge=+57.5% | score=0.1150 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.185
+05:56:24 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:24 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:26 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in New York City be between 60-61°F on March 16?' edge=-0.175
+05:56:26 | INFO     | TRADE SIGNAL: BUY NO | city=New York City date=2026-03-16 threshold=60.0C | model=0.0% market=17.5% edge=-17.5% | score=0.0175 [day=0.2 price=0.5 win=1.0] | size=$5.25 @ 0.825
+05:56:27 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:27 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:29 | INFO     | TRADE SIGNAL: BUY YES | city=Toronto date=2026-03-16 threshold=10.0C | model=98.0% market=8.5% edge=+89.5% | score=0.1790 [day=0.2 price=1.0 win=1.0] | size=$5.14 @ 0.085
+05:56:30 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:30 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:32 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in Seoul be 10°C on March 17?' edge=+0.820
+05:56:32 | INFO     | TRADE SIGNAL: BUY YES | city=Seoul date=2026-03-17 threshold=10.0C | model=94.0% market=12.0% edge=+82.0% | score=0.1640 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.120
+05:56:32 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:32 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:36 | INFO     | TRADE SIGNAL: BUY YES | city=London date=2026-03-17 threshold=13.0C | model=80.0% market=13.0% edge=+67.0% | score=0.1340 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.130
+05:56:37 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:37 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:39 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in New York City be 50°F or higher on March 17?' edge=+0.410
+05:56:39 | INFO     | TRADE SIGNAL: BUY YES | city=New York City date=2026-03-17 threshold=10.0F | model=98.0% market=57.0% edge=+41.0% | score=0.0656 [day=0.2 price=0.8 win=1.0] | size=$5.01 @ 0.570
+05:56:39 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:39 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+05:56:39 | INFO     | Cycle complete: 0 trades, 32 skipped, 7 errors | Total exposure: $0.00 | Daily PnL: $0.00
+05:57:42 | INFO     | Weather Polymarket Bot starting up
+05:57:42 | INFO     | Config: dry_run=False bankroll=$21.00 edge_threshold=10% kelly_fraction=25%
+05:57:43 | INFO     | CLOB client initialized for live trading
+05:57:43 | INFO     | ============================================================
+05:57:43 | INFO     | Starting new bot cycle
+05:57:44 | INFO     | Found 313 weather markets on Polymarket
+05:57:44 | INFO     | Fetched 313 weather markets
+05:57:44 | INFO     | Grouped into 39 events
+05:57:49 | INFO     | TRADE SIGNAL: BUY YES | city=Seoul date=2026-03-16 threshold=9.0C | model=94.0% market=16.5% edge=+77.5% | score=0.1550 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.165
+05:57:50 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:57:50 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:57:53 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in London be 11°C on March 16?' edge=+0.580
+05:57:53 | INFO     | TRADE SIGNAL: BUY YES | city=London date=2026-03-16 threshold=11.0C | model=76.0% market=18.0% edge=+58.0% | score=0.1160 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.180
+05:57:53 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:57:53 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:57:55 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in New York City be between 56-57°F on March 16?' edge=-0.200
+05:57:55 | INFO     | TRADE SIGNAL: BUY NO | city=New York City date=2026-03-16 threshold=56.0C | model=0.0% market=20.0% edge=-20.0% | score=0.0200 [day=0.2 price=0.5 win=1.0] | size=$5.25 @ 0.800
+05:57:56 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:57:56 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:57:58 | INFO     | TRADE SIGNAL: BUY YES | city=Toronto date=2026-03-16 threshold=10.0C | model=98.0% market=8.5% edge=+89.5% | score=0.1790 [day=0.2 price=1.0 win=1.0] | size=$5.14 @ 0.085
+05:57:59 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:57:59 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:58:01 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in Seoul be 10°C on March 17?' edge=+0.820
+05:58:01 | INFO     | TRADE SIGNAL: BUY YES | city=Seoul date=2026-03-17 threshold=10.0C | model=94.0% market=12.0% edge=+82.0% | score=0.1640 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.120
+05:58:02 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:58:02 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:58:06 | INFO     | TRADE SIGNAL: BUY YES | city=London date=2026-03-17 threshold=13.0C | model=80.0% market=13.0% edge=+67.0% | score=0.1340 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.130
+05:58:06 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:58:06 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:58:08 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in New York City be 50°F or higher on March 17?' edge=+0.410
+05:58:08 | INFO     | TRADE SIGNAL: BUY YES | city=New York City date=2026-03-17 threshold=10.0F | model=98.0% market=57.0% edge=+41.0% | score=0.0656 [day=0.2 price=0.8 win=1.0] | size=$5.01 @ 0.570
+05:58:09 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:58:09 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'invalid signature'}]
+05:58:09 | INFO     | Cycle complete: 0 trades, 32 skipped, 7 errors | Total exposure: $0.00 | Daily PnL: $0.00
+08:56:37 | INFO     | Weather Polymarket Bot starting up
+08:56:37 | INFO     | Config: dry_run=False bankroll=$21.00 edge_threshold=10% kelly_fraction=25%
+08:56:38 | INFO     | CLOB client initialized for live trading
+08:56:38 | INFO     | ============================================================
+08:56:38 | INFO     | Starting new bot cycle
+08:56:40 | INFO     | Found 329 weather markets on Polymarket
+08:56:40 | INFO     | Fetched 329 weather markets
+08:56:40 | INFO     | Grouped into 39 events
+08:56:47 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:56:47 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:56:50 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in Seoul be 10°C on March 17?' edge=+0.790
+08:56:50 | INFO     | TRADE SIGNAL: BUY YES | city=Seoul date=2026-03-17 threshold=10.0C | model=90.0% market=11.0% edge=+79.0% | score=0.1580 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.110 | url=https://polymarket.com/event/highest-temperature-in-seoul-on-march-17-2026
+08:56:51 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:56:51 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:56:53 | INFO     | TRADE SIGNAL: BUY YES | city=London date=2026-03-17 threshold=13.0C | model=76.0% market=12.5% edge=+63.5% | score=0.1270 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.125 | url=https://polymarket.com/event/highest-temperature-in-london-on-march-17-2026
+08:56:54 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:56:54 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:56:56 | INFO     | TRADE SIGNAL: BUY YES | city=Wellington date=2026-03-17 threshold=19.0C | model=52.0% market=14.0% edge=+38.0% | score=0.0608 [day=0.2 price=1.0 win=0.8] | size=$5.00 @ 0.140 | url=https://polymarket.com/event/highest-temperature-in-wellington-on-march-17-2026
+08:56:56 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:56:56 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:56:59 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in Shanghai be 11°C on March 17?' edge=+0.620
+08:56:59 | INFO     | TRADE SIGNAL: BUY YES | city=Shanghai date=2026-03-17 threshold=11.0C | model=76.0% market=14.0% edge=+62.0% | score=0.1240 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.140 | url=https://polymarket.com/event/highest-temperature-in-shanghai-on-march-17-2026
+08:57:00 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:57:00 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:57:02 | INFO     | Event has 11 legs, 2 with edge — best: 'Will the highest temperature in New York City be 50°F or higher on March 17?' edge=+0.370
+08:57:02 | INFO     | TRADE SIGNAL: BUY YES | city=New York City date=2026-03-17 threshold=10.0F | model=98.0% market=61.0% edge=+37.0% | score=0.0592 [day=0.2 price=0.8 win=1.0] | size=$5.00 @ 0.610 | url=https://polymarket.com/event/highest-temperature-in-nyc-on-march-17-2026
+08:57:03 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:57:03 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:57:03 | INFO     | Cycle complete: 0 trades, 33 skipped, 6 errors | Total exposure: $0.00 | Daily PnL: $0.00
+08:59:36 | INFO     | Weather Polymarket Bot starting up
+08:59:36 | INFO     | Config: dry_run=False bankroll=$21.00 edge_threshold=10% kelly_fraction=25%
+08:59:37 | INFO     | CLOB client initialized for live trading
+08:59:37 | INFO     | ============================================================
+08:59:37 | INFO     | Starting new bot cycle
+08:59:40 | INFO     | Found 329 weather markets on Polymarket
+08:59:40 | INFO     | Fetched 329 weather markets
+08:59:40 | INFO     | Grouped into 39 events
+08:59:45 | INFO     | TRADE SIGNAL: BUY YES | city=Seoul date=2026-03-16 threshold=9.0C | model=96.0% market=15.0% edge=+81.0% | score=0.1620 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.150
+08:59:45 | INFO     | Polymarket URL: https://polymarket.com/event/highest-temperature-in-seoul-on-march-16-2026
+08:59:46 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:59:46 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:59:49 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:59:49 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:59:50 | INFO     | TRADE SIGNAL: BUY YES | city=London date=2026-03-16 threshold=11.0C | model=82.0% market=18.0% edge=+64.0% | score=0.1280 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.180
+08:59:50 | INFO     | Polymarket URL: https://polymarket.com/event/highest-temperature-in-london-on-march-16-2026
+08:59:51 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:59:51 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:59:53 | INFO     | Event has 11 legs, 3 with edge — best: 'Will the highest temperature in Seoul be 10°C on March 17?' edge=+0.790
+08:59:53 | INFO     | TRADE SIGNAL: BUY YES | city=Seoul date=2026-03-17 threshold=10.0C | model=90.0% market=11.0% edge=+79.0% | score=0.1580 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.110
+08:59:53 | INFO     | Polymarket URL: https://polymarket.com/event/highest-temperature-in-seoul-on-march-17-2026
+08:59:54 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:59:54 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:59:56 | INFO     | TRADE SIGNAL: BUY YES | city=London date=2026-03-17 threshold=13.0C | model=76.0% market=12.5% edge=+63.5% | score=0.1270 [day=0.2 price=1.0 win=1.0] | size=$5.00 @ 0.125
+08:59:56 | INFO     | Polymarket URL: https://polymarket.com/event/highest-temperature-in-london-on-march-17-2026
+08:59:57 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:59:57 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+08:59:59 | INFO     | TRADE SIGNAL: BUY YES | city=Wellington date=2026-03-17 threshold=19.0C | model=52.0% market=14.0% edge=+38.0% | score=0.0608 [day=0.2 price=1.0 win=0.8] | size=$5.00 @ 0.140
+08:59:59 | INFO     | Polymarket URL: https://polymarket.com/event/highest-temperature-in-wellington-on-march-17-2026
+09:00:00 | ERROR    | Trade execution failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+09:00:00 | ERROR    | Trade failed: PolyApiException[status_code=400, error_message={'error': 'not enough balance / allowance'}]
+09:00:09 | INFO     | Cycle complete: 0 trades, 33 skipped, 6 errors | Total exposure: $0.00 | Daily PnL: $0.00

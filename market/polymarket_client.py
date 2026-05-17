@@ -23,6 +23,7 @@ class MarketOpportunity:
     volume_24h: float
     liquidity: float
     event_id: str = ""   # groups all legs of the same negRisk event
+    polymarket_url: str = ""  # direct link to the market on Polymarket
 
 
 class PolymarketClient:
@@ -70,7 +71,11 @@ class PolymarketClient:
 
             for event in events:
                 for raw_market in event.get("markets", []):
-                    opportunity = self._parse_gamma_market(raw_market, event_id=event.get("id", ""))
+                    opportunity = self._parse_gamma_market(
+                        raw_market,
+                        event_id=event.get("id", ""),
+                        event_slug=event.get("slug", ""),
+                    )
                     if opportunity:
                         results.append(opportunity)
 
@@ -82,7 +87,7 @@ class PolymarketClient:
         logger.info(f"Found {len(results)} weather markets on Polymarket")
         return results
 
-    def _parse_gamma_market(self, raw: dict, event_id: str = "") -> Optional[MarketOpportunity]:
+    def _parse_gamma_market(self, raw: dict, event_id: str = "", event_slug: str = "") -> Optional[MarketOpportunity]:
         """Parse a raw search-v2 market into a MarketOpportunity."""
         import json as _json
         try:
@@ -112,6 +117,9 @@ class PolymarketClient:
             volume = float(raw.get("volume24hr", 0) or 0)
             liquidity = float(raw.get("liquidity", 0) or 0)
 
+            slug = event_slug or raw.get("slug", "")
+            polymarket_url = f"https://polymarket.com/event/{slug}" if slug else f"https://polymarket.com/market/{condition_id}"
+
             return MarketOpportunity(
                 market_id=market_id,
                 question=question,
@@ -123,6 +131,7 @@ class PolymarketClient:
                 volume_24h=volume,
                 liquidity=liquidity,
                 event_id=event_id,
+                polymarket_url=polymarket_url,
             )
 
         except (KeyError, ValueError, TypeError) as e:

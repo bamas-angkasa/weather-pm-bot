@@ -14,6 +14,10 @@ from datetime import datetime
 from typing import Optional
 from loguru import logger
 
+def private_key_to_address(private_key: str) -> str:
+    from eth_account import Account
+    return Account.from_key(private_key).address
+
 
 @dataclass
 class TradeResult:
@@ -67,6 +71,8 @@ class Trader:
                 chain_id=self.CHAIN_ID,
                 key=private_key,
                 creds=creds,
+                signature_type=0,  # EOA — must match signature_type used in get_creds.py
+                funder=private_key_to_address(private_key),
             )
             logger.info("CLOB client initialized for live trading")
 
@@ -144,9 +150,13 @@ class Trader:
             # Add small buffer above mid to improve fill probability
             limit_price = min(price + 0.01, 0.99)
 
+            # CLOB expects size in shares, not USDC
+            # shares = usdc_amount / price_per_share
+            shares = round(size / limit_price, 2)
+
             order_args = OrderArgs(
                 price=limit_price,
-                size=size,
+                size=shares,
                 side=BUY,
                 token_id=token_id,
             )
@@ -159,7 +169,7 @@ class Trader:
 
             logger.info(
                 f"[LIVE] BUY {side} | market={market_id[:8]}... | "
-                f"size=${size:.2f} @ {limit_price:.3f} | "
+                f"${size:.2f} USDC → {shares} shares @ {limit_price:.3f} | "
                 f"order_id={order_id} status={status}"
             )
 

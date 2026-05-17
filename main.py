@@ -302,16 +302,18 @@ def process_event(
         return "skipped"
 
     priority = best["priority"]
-    logger.info(
-        f"TRADE SIGNAL: BUY {side} | "
-        f"city={parsed.city} date={parsed.target_date} "
-        f"threshold={parsed.threshold}{parsed.unit[0].upper()} | "
-        f"model={model_probability:.1%} market={market.yes_price:.1%} "
-        f"edge={edge_result.edge:+.1%} | "
-        f"score={priority.final:.4f} "
-        f"[day={priority.day_score:.1f} price={priority.price_score:.1f} win={priority.win_score:.1f}] | "
-        f"size=${capped_size:.2f} @ {token_price:.3f}"
-    )
+    if side == "YES":
+        logger.info(
+            f"TRADE SIGNAL: BUY YES | "
+            f"city={parsed.city} date={parsed.target_date} "
+            f"threshold={parsed.threshold}{parsed.unit[0].upper()} | "
+            f"model={model_probability:.1%} market={market.yes_price:.1%} "
+            f"edge={edge_result.edge:+.1%} | "
+            f"score={priority.final:.4f} "
+            f"[day={priority.day_score:.1f} price={priority.price_score:.1f} win={priority.win_score:.1f}] | "
+            f"size=${capped_size:.2f} @ {token_price:.3f}"
+        )
+        logger.info(f"Polymarket URL: {market.polymarket_url}")
 
     result = trader.buy(
         market_id=market.market_id,

@@ -1,16 +1,17 @@
 trading:
   edge_threshold: 0.10       # minimum edge to trade
   kelly_fraction: 0.25       # fractional Kelly multiplier
-  dry_run: true              # set false for live trading
+  dry_run: false              # set false for live trading
   min_liquidity: 1000        # min market liquidity in USDC
   min_volume: 500            # min 24h volume in USDC
   max_spread: 0.08           # max bid-ask spread to enter
 
 risk:
-  max_exposure_per_market: 0.03   # 3% of bankroll per market
-  max_exposure_per_city: 0.10     # 10% of bankroll per city
-  max_daily_loss: 0.05            # 5% daily stop-loss
-  max_portfolio_exposure: 0.25    # 25% max total exposure
+  min_trade_size: 5.0             # Polymarket minimum order size in USDC
+  max_exposure_per_market: 0.25   # 25% of bankroll per market → $5.25 on $21
+  max_exposure_per_city: 0.35     # 35% per city → $7.35
+  max_daily_loss: 0.15            # 15% daily stop-loss → $3.15
+  max_portfolio_exposure: 0.60    # 60% max total exposure → $12.60
 
 weather:
   ensemble_models:
